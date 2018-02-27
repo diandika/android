@@ -2,6 +2,7 @@ package com.example.android.calorietracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.hardware.Sensor;
@@ -21,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,18 @@ public class TrackerActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_tracker);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences twitterData = this.getSharedPreferences("twitterPreferences",Context.MODE_PRIVATE);
+
+        String sPhoto = twitterData.getString("photo","R.drawable.ic_launcher_background");
+        if (sPhoto != "R.drawable.ic_launcher_background"){
+            Uri Photo = Uri.parse(sPhoto);
+            ImageView displayPic = (ImageView) findViewById(R.id.profile_pic);
+            displayPic.setImageURI(Photo);
+        }
+        String displayName = twitterData.getString("name","user");
+        TextView nameView = (TextView) findViewById(R.id.name_user);
+        nameView.setText(displayName);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -102,8 +102,8 @@
     </string-array>
     <string name="waktu_prompt">Pilih Waktu</string>
 
-    <string android:name="com.twitter.sdk.android.CONSUMER_KEY">sZVKFlomUMdCQOuctgzEj8ODD</string>
-    <string android:name="com.twitter.sdk.android.CONSUMER_SECRET">	T32Su8HrnpJ78gWc1Ctfg2Q2IqOqfU7SoK0QwNZDmk1pk0VPv6</string>
+    <string name="CONSUMER_KEY">sZVKFlomUMdCQOuctgzEj8ODD</string>
+    <string name="CONSUMER_SECRET">	T32Su8HrnpJ78gWc1Ctfg2Q2IqOqfU7SoK0QwNZDmk1pk0VPv6</string>
 
     <string name="facebook_app_id">166207887434856</string>
     <string name="fb_login_protocol_scheme">fb166207887434856</string>

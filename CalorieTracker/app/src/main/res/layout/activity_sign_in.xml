@@ -23,8 +23,7 @@
         android:layout_marginTop="10dp"
         android:background="#55acee"
         android:text="@string/twitter_login"
-        android:textColor="#ffffff"
-        android:onClick="twitterLogin"/>
+        android:textColor="#ffffff"/>
 
 
     <TextView

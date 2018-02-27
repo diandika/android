@@ -1,6 +1,9 @@
 package com.example.android.calorietracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -29,18 +31,23 @@ public class SignIn extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final String TAG = "TwitterLogin";
     private TwitterLoginButton mTwitterLoginButton;
+    private String twitterPreferences = "twitterPreferences";
+    private SharedPreferences twitterData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Twitter.initialize(this);
-        TwitterConfig twitterConfig = new TwitterConfig.Builder(this)
-                .logger(new DefaultLogger(Log.DEBUG))
-                .twitterAuthConfig(new TwitterAuthConfig("CONSUMER_KEY","CONSUMER_SECRET"))
-                .debug(true)
-                .build();
-        Twitter.initialize(twitterConfig);
+//        Twitter.initialize(this);
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig =new TwitterAuthConfig(
+                getString(R.string.CONSUMER_KEY),
+                getString(R.string.CONSUMER_SECRET));
+        TwitterConfig twitterConfig = new TwitterConfig.Builder(this)
+                .twitterAuthConfig(authConfig)
+                .build();
+
+        Twitter.initialize(twitterConfig);
         setContentView(R.layout.activity_sign_in);
+        twitterData = getSharedPreferences(twitterPreferences, Context.MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
         mTwitterLoginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
@@ -65,14 +72,23 @@ public class SignIn extends AppCompatActivity {
         //updateUI(currentUser);
     }
 
-    public void fbLogin(View view) {
+    public void twitterLogin() {
         Intent intent = new Intent(this,TrackerActivity.class);
-        startActivity(intent);
-    }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            String name = user.getDisplayName();
+            Uri Photo = user.getPhotoUrl();
+            String sPhoto = Photo.toString();
 
-    public void twitterLogin(View view) {
-        Intent intent = new Intent(this,TrackerActivity.class);
-        startActivity(intent);
+            //ImageView ProfPic = (ImageView) findViewById(R.id.profile_pic);
+            //ProfPic.setImageResource(Photo);;
+            SharedPreferences.Editor editor = twitterData.edit();
+            editor.putString("name",name);
+            editor.putString("photo",sPhoto);
+            editor.apply();
+
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -98,6 +114,7 @@ public class SignIn extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             //updateUI(user);
+                            twitterLogin();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
